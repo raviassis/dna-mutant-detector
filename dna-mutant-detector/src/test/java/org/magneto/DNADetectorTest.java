@@ -26,6 +26,12 @@ public class DNADetectorTest {
     }
 
     @ParameterizedTest
+    @MethodSource("smallSizeSamples")
+    void shouldAcceptAnySizeMatrix(String[] dna) {
+        assertFalse(DNADetector.isMutant(dna));
+    }
+
+    @ParameterizedTest
     @MethodSource("invalidCharacterSamples")
     void shouldThrowForInvalidCharacter(String[] dna) {
         assertThrows(IllegalArgumentException.class, () -> DNADetector.isMutant(dna));
@@ -117,6 +123,65 @@ public class DNADetectorTest {
                         "ATACGG",
                         "GCGTCA",
                         "TCACTG"
+                }),
+                // 7x7 with two horizontal sequences
+                arguments((Object) new String[]{
+                        "AAAATCG",
+                        "CAGTGCA",
+                        "TTATGTA",
+                        "AGACGGT",
+                        "CCCCGTA",
+                        "TCACTGA",
+                        "GACTACT"
+                }),
+                // 8x8 with two horizontal sequences
+                arguments((Object) new String[]{
+                        "ATCGATCG",
+                        "CAGTGCAT",
+                        "TTATGTAA",
+                        "AAAACTGT",
+                        "GCGTCATC",
+                        "TCACTGAC",
+                        "CCCCAGTT",
+                        "GACTACTG"
+                }),
+                // 4x6 with two horizontal sequences
+                arguments((Object) new String[]{
+                        "AAAATA",
+                        "CAGTGC",
+                        "TTTTGT",
+                        "AGACGG"
+                }),
+                // 6x4 with repeated vertical sequences
+                arguments((Object) new String[]{
+                        "ATGC",
+                        "ATGC",
+                        "ATGC",
+                        "ATGC",
+                        "CAGT",
+                        "TGCA"
+                }),
+                // 7x8 with two horizontal sequences
+                arguments((Object) new String[]{
+                        "AAAATGCA",
+                        "CAGTGCAT",
+                        "TTATGTAA",
+                        "AGACGGTT",
+                        "CCCCATGA",
+                        "TCACTGAC",
+                        "GACTACTG"
+                }),
+                // 9x7 with two horizontal sequences
+                arguments((Object) new String[]{
+                        "ATGCGTA",
+                        "CAGTGCA",
+                        "TTATGTA",
+                        "AAAACGT",
+                        "GCGTCAT",
+                        "TCACTGA",
+                        "CCCCAGT",
+                        "GACTACT",
+                        "ATCGATC"
                 })
         );
     }
@@ -138,6 +203,64 @@ public class DNADetectorTest {
                         "AGACGG",
                         "GCGTCA",
                         "TCACTG"
+                }),
+                // 4x6 without mutant sequences
+                arguments((Object) new String[]{
+                        "ATGCGA",
+                        "CAGTAC",
+                        "TTATGT",
+                        "AGACGG"
+                }),
+                // 6x4 without mutant sequences
+                arguments((Object) new String[]{
+                        "ATGC",
+                        "CAGT",
+                        "TTAT",
+                        "AGAC",
+                        "GCGT",
+                        "TCAA"
+                }),
+                // 7x7 without mutant sequences
+                arguments((Object) new String[]{
+                        "ATCGATC",
+                        "TAGCTAG",
+                        "CGTACGT",
+                        "CAATGGA",
+                        "ATCAATC",
+                        "TAGCTAG",
+                        "CGTACGT"
+                }),
+                // 8x8 without mutant sequences
+                arguments((Object) new String[]{
+                        "ATAGATCG",
+                        "TAGTTAGC",
+                        "CGTACGTA",
+                        "ACATTCAT",
+                        "TCCATACG",
+                        "AGCATGCA",
+                        "CTAGCTAG",
+                        "GTCAGTCA"
+                }),
+                // 8x7 without mutant sequences
+                arguments((Object) new String[]{
+                        "ATCGATC",
+                        "TAGCTAG",
+                        "CGTACGT",
+                        "CCATGAA",
+                        "TACATAC",
+                        "TGCATGC",
+                        "CTAGCTA",
+                        "GTCAGTC"
+                }),
+                // 7x9 without mutant sequences
+                arguments((Object) new String[]{
+                        "ATAGATCGA",
+                        "TAGTTAGCT",
+                        "CGTACGTAC",
+                        "CCATACATG",
+                        "TACGTACGT",
+                        "AGCATGCAT",
+                        "CTAGCTAGC"
                 })
         );
     }
@@ -159,6 +282,29 @@ public class DNADetectorTest {
                         "AGACGG",
                         "GCG1CA",
                         "TCACTG"
+                })
+        );
+    }
+
+
+    private static Stream<Arguments> smallSizeSamples() {
+        return Stream.of(
+                arguments((Object) new String[]{
+                        "A"
+                }),
+                arguments((Object) new String[]{
+                        "ATC",
+                        "GTA"
+                }),
+                arguments((Object) new String[]{
+                        "AT",
+                        "CG",
+                        "TA"
+                }),
+                arguments((Object) new String[]{
+                        "ATC",
+                        "GTA",
+                        "CGA"
                 })
         );
     }
