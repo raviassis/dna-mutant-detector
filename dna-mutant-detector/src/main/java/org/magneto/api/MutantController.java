@@ -1,21 +1,38 @@
 package org.magneto.api;
 
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.magneto.api.dtos.DNADto;
 import org.magneto.core.DNADetector;
+import org.magneto.core.DNAHasher;
+import org.magneto.entities.DNAEntity;
+import org.magneto.services.DNAService;
+
+import java.security.NoSuchAlgorithmException;
 
 @Path("mutant")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class MutantController {
 
+    @Inject
+    DNAService dnaService;
+
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response mutant(DNADto dto) {
-        if (DNADetector.isMutant(dto.dna)) {
+    @Transactional
+    public Response mutant(DNADto dto) throws NoSuchAlgorithmException {
+        var dna = dnaService.analyse(dto.dna);
+        if (dna.mutant) {
             return Response.ok().build();
         }
         return Response.status(Response.Status.FORBIDDEN).build();
+    }
+
+    @GET
+    public Response list() {
+        return Response.ok(DNAEntity.listAll()).build();
     }
 }
