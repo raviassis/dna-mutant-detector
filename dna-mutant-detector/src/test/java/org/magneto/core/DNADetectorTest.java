@@ -1,4 +1,4 @@
-package org.magneto;
+package org.magneto.core;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

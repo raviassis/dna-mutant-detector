@@ -1,4 +1,4 @@
-package org.magneto;
+package org.magneto.core;
 
 public class DNADetector {
     private static int SEQUENCE_LENGTH = 4;
