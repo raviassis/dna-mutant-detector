@@ -17,9 +17,13 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
       - name: Run Tests + JaCoCo
-        run: mvn clean verify
+        run: | 
+          mvn clean verify
+      - run: |
+          ls target/site
+          ls target/site/jacoco
       - name: Upload JaCoCo HTML
         uses: actions/upload-artifact@v6
         with:
           name: jacoco-report
-          path: target/site/jacoco
+          path: .
