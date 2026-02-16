@@ -2,54 +2,54 @@
 
 import { JSX, useState, useEffect } from "react";
 
-interface DnaToken {
+interface DnaSequence {
   value: string;
   isValid: boolean;
 }
 
-interface DnaTokenInputProps {
-  onTokensChange?: (tokens: string[]) => void;
+interface DnaSequenceInputProps {
+  onSequencesChange?: (sequences: string[]) => void;
   resetTrigger?: number;
 }
 
 const dnaRegex: RegExp = /^[ATCG]+$/i;
 
-export default function DnaTokenInput({ onTokensChange, resetTrigger }: DnaTokenInputProps): JSX.Element {
-  const [tokens, setTokens] = useState<DnaToken[]>([]);
+export default function DnaSequeceInput({ onSequencesChange, resetTrigger }: DnaSequenceInputProps): JSX.Element {
+  const [sequences, setSequences] = useState<DnaSequence[]>([]);
   const [input, setInput] = useState<string>("");
 
   useEffect(() => {
-    if (onTokensChange) {
-      onTokensChange(tokens.map((token) => token.value));
+    if (onSequencesChange) {
+      onSequencesChange(sequences.map((seq) => seq.value));
     }
-  }, [tokens, onTokensChange]);
+  }, [sequences, onSequencesChange]);
 
   useEffect(() => {
     if (resetTrigger !== undefined) {
-      setTokens([]);
+      setSequences([]);
       setInput("");
     }
   }, [resetTrigger]);
 
-  function addToken(value: string): void {
+  function addSequence(value: string): void {
     if (!value.trim()) return;
 
     const clean = value.trim().toUpperCase();
     const sequences = clean.split(/\s+/).filter((seq) => seq.length > 0);
 
     sequences.forEach((seq) => {
-      const newToken: DnaToken = {
+      const newSequence: DnaSequence = {
         value: seq,
         isValid: dnaRegex.test(seq),
       };
-      setTokens((prev) => [...prev, newToken]);
+      setSequences((prev) => [...prev, newSequence]);
     });
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>): void {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      addToken(input);
+      addSequence(input);
       setInput("");
     } else if (!/^[ATGCatgc]$/.test(e.key) && !["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", "Control", "Meta", "c", "v", "x"].includes(e.key)) {
       e.preventDefault();
@@ -67,24 +67,24 @@ export default function DnaTokenInput({ onTokensChange, resetTrigger }: DnaToken
     setInput((prev) => (prev + " " + pastedText).toUpperCase().replace(/[^ATGC ]/gi, " ").replace(/\s+/g, " ").trim());
   }
 
-  function removeToken(index: number): void {
-    setTokens((prev) => prev.filter((_, i) => i !== index));
+  function removeSequence(index: number): void {
+    setSequences((prev) => prev.filter((_, i) => i !== index));
   }
 
   return (
     <div className="flex flex-col gap-2 p-2 rounded border-2 border-magneto-red bg-magneto-dark">
       <div className="flex flex-wrap gap-1.5">
-        {tokens && tokens.map((token, index) => (
+        {sequences && sequences.map((seq, index) => (
           <div
             key={index}
             className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-white font-semibold ${
-              token.isValid ? "bg-green-700" : "bg-red-700"
+              seq.isValid ? "bg-green-700" : "bg-red-700"
             }`}
           >
-            {token.value}
+            {seq.value}
             <span
               className="cursor-pointer font-bold hover:opacity-70"
-              onClick={() => removeToken(index)}
+              onClick={() => removeSequence(index)}
             >
               ×
             </span>
@@ -93,6 +93,7 @@ export default function DnaTokenInput({ onTokensChange, resetTrigger }: DnaToken
       </div>
 
       <input
+        data-testid="dna-sequence-input"
         value={input}
         onChange={handleInputChange}
         onPaste={handlePaste}
