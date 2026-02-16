@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import DnaTokenInput from "@/src/components/DNATokenInput";
+import DnaSequeceInput from "@/src/components/DNASequenceInput";
 import { useStats, useAnalyzeDna } from "@/src/hooks/useApi";
 import DNAAnalysisResult, { AnalysisResult } from "@/src/components/DNAAnalysisResult";
 import Header from "@/src/components/Header";
@@ -13,20 +13,15 @@ export default function Home() {
   const [tokens, setTokens] = useState<string[]>([]);
   const [resetTrigger, setResetTrigger] = useState(0);
 
-  const { data: metrics, isLoading: metricsLoading } = useStats();
+  const { data: metrics } = useStats();
   const analyzeMutation = useAnalyzeDna();
 
   const handleSubmit = async () => {
-    if (tokens.length === 0) {
-      alert("Please add at least one DNA sequence");
-      return;
-    }
 
     try {
       const result = await analyzeMutation.mutateAsync(tokens);
       setAnalysisResult({
         isMutant: result.isMutant,
-        sequences: tokens,
       });
       setResetTrigger((prev) => prev + 1);
     } catch (error) {
@@ -45,7 +40,7 @@ export default function Home() {
           <h2 className="text-lg font-semibold mb-3 text-magneto-silver">
             Enter DNA Sequences
           </h2>
-          <DnaTokenInput onTokensChange={setTokens} resetTrigger={resetTrigger} />
+          <DnaSequeceInput onSequencesChange={setTokens} resetTrigger={resetTrigger} />
         </div>
 
         <button

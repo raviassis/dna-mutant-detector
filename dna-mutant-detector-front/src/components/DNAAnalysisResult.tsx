@@ -2,7 +2,6 @@ import { JSX } from "react";
 
 export interface AnalysisResult {
   isMutant: boolean;
-  sequences: string[];
 }
 
 export default function DNAAnalysisResult({ analysisResult }: { analysisResult: AnalysisResult | null }): JSX.Element {
