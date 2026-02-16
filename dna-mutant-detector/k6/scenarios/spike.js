@@ -2,21 +2,18 @@ import http from 'k6/http';
 import { sleep, check } from 'k6';
 
 export const options = {
-  // stages: [
-  //   { duration: '5s', target: 100 },
-  //   { duration: '20s', target: 1_000_000 },
-  //   { duration: '5s', target: 100 },
-  // ],
   scenarios: {
     spike: {
       executor: 'ramping-arrival-rate',
       startRate: 100, // req/s
       timeUnit: '1s',
-      preAllocatedVUs: 1000, 
+      preAllocatedVUs: 5000, 
       maxVUs: 10_000,
       stages: [
-        { target: 100_000, duration: '10s' },  // ramp up to 100k req/s
-        { target: 100_000, duration: '10s' },  // keep at 100k req/s
+        // target iterations per `timeUnit` for the duration.
+        // 1_000_000 iterations per second for 5 seconds, 
+        { target: 1_000_000, duration: '5s' },  // ramp up to 100k req/s
+        { target: 1_000_000, duration: '20s' },  // keep at 100k req/s
         { target: 100, duration: '5s' },     // ramp down to 100 req/s
       ],
     },

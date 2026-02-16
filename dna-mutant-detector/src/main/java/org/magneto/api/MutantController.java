@@ -6,9 +6,6 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.magneto.api.dtos.DNADto;
-import org.magneto.core.DNADetector;
-import org.magneto.core.DNAHasher;
-import org.magneto.entities.DNAEntity;
 import org.magneto.services.DNAService;
 
 import java.security.NoSuchAlgorithmException;
