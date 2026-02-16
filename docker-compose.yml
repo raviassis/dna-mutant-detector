@@ -18,7 +18,7 @@ services:
 
   backend:
     build:
-      context: .
+      context: ./dna-mutant-detector
       dockerfile: src/main/docker/Dockerfile.jvm
     container_name: dna-mutant-detector
     depends_on:
@@ -30,6 +30,19 @@ services:
       QUARKUS_DATASOURCE_PASSWORD: magneto
     ports:
       - "8080:8080"
+  
+  frontend:
+    build:
+      context: ./dna-mutant-detector-front
+      dockerfile: Dockerfile
+    container_name: dna-mutant-detector-front
+    depends_on:
+      backend:
+        condition: service_started
+    environment:
+      NEXT_PUBLIC_API_URL: http://backend:8080
+    ports:
+     - "3000:3000"
 
 volumes:
   postgres_data:
