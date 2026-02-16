@@ -1,16 +1,18 @@
 package org.magneto.core;
 
+import org.magneto.exceptions.ValidationException;
+
 public class DNADetector {
     private static int SEQUENCE_LENGTH = 4;
     public static boolean isMutant(String[] dna) {
         if (dna == null) {
-            throw new IllegalArgumentException("DNA must not be null");
+            throw new ValidationException("DNA must not be null");
         }
         var found = 0;
         for (int i = 0; i < dna.length; i++) {
             var row = dna[i];
             if (row == null) {
-                throw new IllegalArgumentException("DNA row must not be null");
+                throw new ValidationException("DNA row must not be null");
             }
 
             for (int j = 0; j < row.length(); j++) {
@@ -78,11 +80,14 @@ public class DNADetector {
 
     static char getN(String[] dna, int i, int j) {
         if (dna == null) {
-            throw new IllegalArgumentException("DNA must not be null");
+            throw new ValidationException("DNA must not be null");
         }
         var row = dna[i];
         if (row == null) {
-            throw new IllegalArgumentException("DNA row must not be null");
+            throw new ValidationException("DNA row must not be null");
+        }
+        if (row.length() <= j) {
+            throw new ValidationException("DNA rows must not have different lengths");
         }
         return row.charAt(j);
     }
@@ -94,7 +99,7 @@ public class DNADetector {
                 nucleotide != 'C' &&
                 nucleotide != 'G'
         ) {
-            throw new IllegalArgumentException(
+            throw new ValidationException(
                     "Invalid DNA character: " + nucleotide + ". Allowed characters are A, T, C, G."
             );
         }
