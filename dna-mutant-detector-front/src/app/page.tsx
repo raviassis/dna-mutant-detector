@@ -13,14 +13,10 @@ export default function Home() {
   const [tokens, setTokens] = useState<string[]>([]);
   const [resetTrigger, setResetTrigger] = useState(0);
 
-  const { data: metrics, isLoading: metricsLoading } = useStats();
+  const { data: metrics } = useStats();
   const analyzeMutation = useAnalyzeDna();
 
   const handleSubmit = async () => {
-    if (tokens.length === 0) {
-      alert("Please add at least one DNA sequence");
-      return;
-    }
 
     try {
       const result = await analyzeMutation.mutateAsync(tokens);

@@ -22,6 +22,7 @@ jobs:
       - name: Run Tests + JaCoCo
         run: mvn clean verify
       - name: Upload JaCoCo HTML
+        if: success() || failure()
         uses: actions/upload-artifact@v6
         with:
           name: jacoco-report
