@@ -37,8 +37,8 @@ jobs:
         run: npm ci
       - name: Run Tests + Jest
         run: npm run test:coverage
-      - run: ls ./coverage/lcov-report
       - name: Upload Jest Coverage
+        if: success() || failure()
         uses: actions/upload-artifact@v6
         with:
           name: jest-coverage
