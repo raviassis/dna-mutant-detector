@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import DnaTokenInput from "@/components/DNATokenInput";
-import { useStats, useAnalyzeDna } from "@/hooks/useApi";
-import DNAAnalysisResult, { AnalysisResult } from "@/components/DNAAnalysisResult";
-import Header from "@/components/Header";
+import DnaTokenInput from "@/src/components/DNATokenInput";
+import { useStats, useAnalyzeDna } from "@/src/hooks/useApi";
+import DNAAnalysisResult, { AnalysisResult } from "@/src/components/DNAAnalysisResult";
+import Header from "@/src/components/Header";
 import { Stats } from "fs";
-import StatsMetrics from "@/components/StatsMetrics";
+import StatsMetrics from "@/src/components/StatsMetrics";
 
 export default function Home() {
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);

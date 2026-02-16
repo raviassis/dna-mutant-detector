@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
 
@@ -31,6 +31,7 @@ export const useStats = () => {
 };
 
 export const useAnalyzeDna = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (tokens: string[]) => {
       const response = await fetch(`${API_BASE_URL}/mutant`, {
@@ -42,7 +43,7 @@ export const useAnalyzeDna = () => {
           dna: tokens,
         }),
       });
-
+      queryClient.invalidateQueries({ queryKey: ["stats"] });
       if (response.ok) {
         return {
           isMutant: true,
