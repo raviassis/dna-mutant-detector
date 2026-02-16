@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.magneto.exceptions.ValidationException;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -34,12 +35,12 @@ public class DNADetectorTest {
     @ParameterizedTest
     @MethodSource("invalidCharacterSamples")
     void shouldThrowForInvalidCharacter(String[] dna) {
-        assertThrows(IllegalArgumentException.class, () -> DNADetector.isMutant(dna));
+        assertThrows(ValidationException.class, () -> DNADetector.isMutant(dna));
     }
 
     @Test
     void shouldThrowWhenDnaIsNull() {
-        assertThrows(IllegalArgumentException.class, () -> DNADetector.isMutant(null));
+        assertThrows(ValidationException.class, () -> DNADetector.isMutant(null));
     }
 
     @Test
@@ -53,7 +54,19 @@ public class DNADetectorTest {
                 "TCACTG"
         };
 
-        assertThrows(IllegalArgumentException.class, () -> DNADetector.isMutant(dna));
+        assertThrows(ValidationException.class, () -> DNADetector.isMutant(dna));
+    }
+
+    @Test
+    void shouldThrowWhenRowsLengthsDifferents() {
+        String[] dna = {
+                "ATGCGAA",
+                "TTATGT",
+                "AGACGG",
+                "GCGTCA",
+                "TCACTG"
+        };
+        assertThrows(ValidationException.class, () -> DNADetector.isMutant(dna));
     }
 
     @Test

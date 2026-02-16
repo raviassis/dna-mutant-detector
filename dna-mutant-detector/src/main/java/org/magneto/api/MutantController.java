@@ -30,9 +30,4 @@ public class MutantController {
         }
         return Response.status(Response.Status.FORBIDDEN).build();
     }
-
-    @GET
-    public Response list() {
-        return Response.ok(DNAEntity.listAll()).build();
-    }
 }
