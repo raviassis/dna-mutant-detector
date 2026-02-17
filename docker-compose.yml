@@ -62,5 +62,21 @@ services:
     environment:
       API_URL: http://backend:8080
 
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./grafana_data:/var/lib/grafana
+    restart: unless-stopped
+
 volumes:
   postgres_data:
