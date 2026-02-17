@@ -53,3 +53,15 @@ TOTAL RESULTS
 
 ![Resultado grafana](result-grafana-test1.png)
 
+## Anlyses
+Firstly, I checked the traces of the requests where the db response time was higher than 500ms.
+![Trace 1](trace-1.png)
+From the results, I could realize that the application spent most part of the time handling the request (3.15s) and awaiting for the database connection (3.97s).
+The trace does not specify if the time processing the request was spent handling the HTTP I/O, or doing some processing like hashing and analysing the dna. I suppose it was spent handling the HTTP I/O.
+
+Solutions:
+- For the time handling the requests, I believe that doing some horizontal autoscaling could solve the problem. The backend is stateless, so we would not have problem with different data between replicas.
+![Solution1](solution-1.png)
+- For the awaiting database connection, increase connection pool wont works forever. I would implement the async persistence to persist the dna hash on database.
+![Solution2](solution-2.png)
+
