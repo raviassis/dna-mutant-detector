@@ -7,6 +7,7 @@ import org.magneto.api.dtos.StatsDto;
 import org.magneto.core.DNADetector;
 import org.magneto.core.DNAHasher;
 import org.magneto.entities.DNAEntity;
+import org.magneto.infra.kafka.asyncPersist.DNAProducer;
 import org.magneto.repositories.DNARepository;
 
 import java.security.NoSuchAlgorithmException;
@@ -14,10 +15,15 @@ import java.security.NoSuchAlgorithmException;
 @ApplicationScoped
 public class DNAService {
     DNARepository dnaRepository;
+    DNAProducer dnaProducer;
 
     @Inject
-    public DNAService(DNARepository dnaRepository) {
+    public DNAService(
+            DNARepository dnaRepository,
+            DNAProducer dnaProducer
+    ) {
         this.dnaRepository = dnaRepository;
+        this.dnaProducer = dnaProducer;
     }
 
     @Transactional
@@ -31,6 +37,14 @@ public class DNAService {
             dnaEntity.mutant = DNADetector.isMutant(dna);
             dnaRepository.persist(dnaEntity);
         }
+        return dnaEntity;
+    }
+
+    public DNAEntity analyse2(String[] dna) throws NoSuchAlgorithmException {
+        var dnaEntity = new DNAEntity();
+        dnaEntity.dnaHash = DNAHasher.hash(dna);
+        dnaEntity.mutant = DNADetector.isMutant(dna);
+        this.dnaProducer.send(dnaEntity);
         return dnaEntity;
     }
 

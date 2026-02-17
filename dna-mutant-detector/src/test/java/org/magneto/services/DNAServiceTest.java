@@ -37,7 +37,7 @@ class DNAServiceTest {
 
         DNARepository repository = mock(DNARepository.class);
         when(repository.findByHash(hash)).thenReturn(existing);
-        DNAService service = new DNAService(repository);
+        DNAService service = new DNAService(repository, null);
 
         DNAEntity result = service.analyse(dna);
 
@@ -59,7 +59,7 @@ class DNAServiceTest {
 
         DNARepository repository = mock(DNARepository.class);
         when(repository.findByHash(hash)).thenReturn(null);
-        DNAService service = new DNAService(repository);
+        DNAService service = new DNAService(repository, null);
 
         DNAEntity result = service.analyse(dna);
 
@@ -85,7 +85,7 @@ class DNAServiceTest {
 
         DNARepository repository = mock(DNARepository.class);
         when(repository.findByHash(hash)).thenReturn(null);
-        DNAService service = new DNAService(repository);
+        DNAService service = new DNAService(repository, null);
 
         DNAEntity result = service.analyse(dna);
 
@@ -101,7 +101,7 @@ class DNAServiceTest {
     void shouldReturnStatsWithRatioWhenHumanCountIsNotZero() {
         DNARepository repository = mock(DNARepository.class);
         when(repository.countDNAs()).thenReturn(new DNARepository.DNACounts(40L, 10L));
-        DNAService service = new DNAService(repository);
+        DNAService service = new DNAService(repository, null);
 
         StatsDto stats = service.stats();
 
@@ -114,7 +114,7 @@ class DNAServiceTest {
     void shouldReturnStatsWithoutRatioWhenHumanCountIsZero() {
         DNARepository repository = mock(DNARepository.class);
         when(repository.countDNAs()).thenReturn(new DNARepository.DNACounts(5L, 0L));
-        DNAService service = new DNAService(repository);
+        DNAService service = new DNAService(repository, null);
 
         StatsDto stats = service.stats();
 

@@ -3,6 +3,7 @@ package org.magneto.infra.kafka.asyncPersist;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.magneto.repositories.DNARepository;
 
@@ -18,6 +19,7 @@ public class DNAConsumer {
     }
 
     @Incoming("async-persist-dna")
+    @Transactional
     public void process(String payload) {
         try {
             DNAToPersistDto dto = mapper.readValue(payload, DNAToPersistDto.class);

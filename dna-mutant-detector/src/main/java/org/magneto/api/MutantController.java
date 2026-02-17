@@ -19,9 +19,8 @@ public class MutantController {
     DNAService dnaService;
 
     @POST
-    @Transactional
     public Response mutant(DNADto dto) throws NoSuchAlgorithmException {
-        var dna = dnaService.analyse(dto.dna);
+        var dna = dnaService.analyse2(dto.dna);
         if (dna.mutant) {
             return Response.ok().build();
         }
