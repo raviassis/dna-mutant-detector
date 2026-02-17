@@ -59,6 +59,12 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+      grafana:
+        condition: service_started
+      prometheus:
+        condition: service_started
+      tempo:
+        condition: service_started
     environment:
       API_URL: http://backend:8080
 
