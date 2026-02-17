@@ -7,14 +7,14 @@ export const options = {
       executor: 'ramping-arrival-rate',
       startRate: 100, // req/s
       timeUnit: '1s',
-      preAllocatedVUs: 5000, 
-      maxVUs: 10_000,
+      preAllocatedVUs: 10_000, 
+      // maxVUs: 10_000,
       stages: [
         // target iterations per `timeUnit` for the duration.
-        // 1_000_000 iterations per second for 5 seconds, 
-        { target: 1_000_000, duration: '5s' },  // ramp up to 100k req/s
-        { target: 1_000_000, duration: '20s' },  // keep at 100k req/s
-        { target: 100, duration: '5s' },     // ramp down to 100 req/s
+        // 1_000_000 iterations per second for 1m, 
+        { target: 1_000_000, duration: '1m' },  // ramp up to 100k req/s
+        { target: 1_000_000, duration: '3m' },  // keep at 100k req/s
+        { target: 100, duration: '1m' },     // ramp down to 100 req/s
       ],
     },
   },

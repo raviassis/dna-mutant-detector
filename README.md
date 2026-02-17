@@ -10,11 +10,13 @@ docker compose up -d
 
 This starts:
 
-| Service   | URL                    | Description        |
-|----------|------------------------|--------------------|
-| Frontend | http://localhost:3000  | Next.js app        |
-| Backend  | http://localhost:8080  | Quarkus API        |
-| Database | localhost:5432         | PostgreSQL (magneto)|
+| Service    | URL                    | Description        |
+|-----------|------------------------|--------------------|
+| Frontend  | http://localhost:3000  | Next.js app        |
+| Backend   | http://localhost:8080  | Quarkus API        |
+| Grafana   | http://localhost:3001  | Dashboards & visualization |
+| Prometheus| http://localhost:9090  | Metrics            |
+| Database  | localhost:5432          | PostgreSQL (magneto)|
 
 To run in the foreground (logs in the terminal):
 
@@ -72,3 +74,22 @@ To use a different API URL:
 ```bash
 k6 run -e API_URL=http://localhost:8080 ./dna-mutant-detector/k6/scenarios/spike.js
 ```
+
+## Visualize with Grafana
+
+Grafana runs when you start the stack with Docker Compose and is available at **http://localhost:3001**.
+
+1. **Start the stack** (if not already running):
+
+   ```bash
+   docker compose up -d
+   ```
+
+2. **Open Grafana** in your browser: [http://localhost:3001](http://localhost:3001).
+
+3. **Log in** with the default credentials:
+   - **Username:** `admin`
+   - **Password:** `admin`  
+   You will be prompted to change the password on first login.
+
+4. **Add data sources** (optional): Prometheus (http://prometheus:9090) and Tempo are available as services in the same Docker network. In Grafana, go to **Connections → Data sources** to add them and build dashboards for metrics and traces.
