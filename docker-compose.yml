@@ -30,6 +30,7 @@ services:
       QUARKUS_DATASOURCE_PASSWORD: magneto
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       QUARKUS_REDIS_HOSTS: redis://redis:6379
+      # MP_MESSAGING_INCOMING_ASYNC-PERSIST-DNA_ENABLED: false
     ports:
       - "8080:8080"
     healthcheck:

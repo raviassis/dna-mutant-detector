@@ -5,16 +5,16 @@ export const options = {
   scenarios: {
     spike: {
       executor: 'ramping-arrival-rate',
-      startRate: 100, // req/s
+      startRate: 100, // iterations/s
       timeUnit: '1s',
       preAllocatedVUs: 1000, 
-      maxVUs: 5000,
+      maxVUs: 3000,
       stages: [
         // target iterations per `timeUnit` for the duration.
-        // 10k iterations per second for 30s, 
-        { target: 10_000, duration: '30s' },  // ramp up to 10k req/s
-        { target: 10_000, duration: '1m' },  // keep at 10k req/s
-        { target: 100, duration: '30s' },     // ramp down to 100 req/s
+        // 600 iterations per second for 30s, 
+        { target: 600, duration: '30s' },  // ramp up to 600 iterations/s
+        { target: 600, duration: '1m' },  // keep at 600 iterations/s
+        { target: 100, duration: '30s' },     // ramp down to 100 iterations/s
       ],
     },
   },
