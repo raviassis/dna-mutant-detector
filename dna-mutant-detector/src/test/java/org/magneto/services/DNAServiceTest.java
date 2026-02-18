@@ -37,7 +37,7 @@ class DNAServiceTest {
 
         DNARepository repository = mock(DNARepository.class);
         when(repository.findByHash(hash)).thenReturn(existing);
-        DNAService service = new DNAService(repository);
+        DNAService service = new DNAService(repository, null);
 
         DNAEntity result = service.analyse(dna);
 
@@ -59,7 +59,7 @@ class DNAServiceTest {
 
         DNARepository repository = mock(DNARepository.class);
         when(repository.findByHash(hash)).thenReturn(null);
-        DNAService service = new DNAService(repository);
+        DNAService service = new DNAService(repository, null);
 
         DNAEntity result = service.analyse(dna);
 
@@ -85,7 +85,7 @@ class DNAServiceTest {
 
         DNARepository repository = mock(DNARepository.class);
         when(repository.findByHash(hash)).thenReturn(null);
-        DNAService service = new DNAService(repository);
+        DNAService service = new DNAService(repository, null);
 
         DNAEntity result = service.analyse(dna);
 
@@ -101,25 +101,25 @@ class DNAServiceTest {
     void shouldReturnStatsWithRatioWhenHumanCountIsNotZero() {
         DNARepository repository = mock(DNARepository.class);
         when(repository.countDNAs()).thenReturn(new DNARepository.DNACounts(40L, 10L));
-        DNAService service = new DNAService(repository);
+        DNAService service = new DNAService(repository, null);
 
         StatsDto stats = service.stats();
 
-        assertEquals(40L, stats.CountMutantDNA);
-        assertEquals(10L, stats.CountHumanDNA);
-        assertEquals(4.0, stats.Ratio);
+        assertEquals(40L, stats.countMutantDNA);
+        assertEquals(10L, stats.countHumanDNA);
+        assertEquals(4.0, stats.ratio);
     }
 
     @Test
     void shouldReturnStatsWithoutRatioWhenHumanCountIsZero() {
         DNARepository repository = mock(DNARepository.class);
         when(repository.countDNAs()).thenReturn(new DNARepository.DNACounts(5L, 0L));
-        DNAService service = new DNAService(repository);
+        DNAService service = new DNAService(repository, null);
 
         StatsDto stats = service.stats();
 
-        assertEquals(5L, stats.CountMutantDNA);
-        assertEquals(0L, stats.CountHumanDNA);
-        assertEquals(0.0, stats.Ratio);
+        assertEquals(5L, stats.countMutantDNA);
+        assertEquals(0L, stats.countHumanDNA);
+        assertEquals(0.0, stats.ratio);
     }
 }

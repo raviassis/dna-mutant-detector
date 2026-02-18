@@ -7,6 +7,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.magneto.services.DNAService;
+import org.magneto.services.DNAServiceAsync;
 
 @Path("stats")
 @Produces(MediaType.APPLICATION_JSON)

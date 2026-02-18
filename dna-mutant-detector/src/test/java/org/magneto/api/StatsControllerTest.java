@@ -19,9 +19,9 @@ class StatsControllerTest {
     @Test
     void shouldReturnOkWithStats() {
         StatsDto expected = new StatsDto();
-        expected.CountMutantDNA = 40L;
-        expected.CountHumanDNA = 10L;
-        expected.Ratio = 4.0;
+        expected.countMutantDNA = 40L;
+        expected.countHumanDNA = 10L;
+        expected.ratio = 4.0;
         when(dnaService.stats()).thenReturn(expected);
 
         given()

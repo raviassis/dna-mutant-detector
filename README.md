@@ -93,3 +93,24 @@ Grafana runs when you start the stack with Docker Compose and is available at **
    You will be prompted to change the password on first login.
 
 4. **Add data sources** (optional): Prometheus (http://prometheus:9090) and Tempo are available as services in the same Docker network. In Grafana, go to **Connections → Data sources** to add them and build dashboards for metrics and traces.
+
+## KAFKA 
+Kafka runs when start the stack using docker compose
+
+Kafka UI (Kafdrop): open http://localhost:9000 in your browser
+
+```bash
+# To produce messages
+# Connect to kafka container
+docker compose exec -it kafka bash
+
+# Produce message
+kafka-console-producer \
+  --bootstrap-server kafka:9092 \
+  --topic async-persist.dna
+# write here each message
+> {"dna-hash":"hash123123","isMutant":true}
+> {"dna-hash":"hash456","isMutant":false}
+# cmd+c or ctrl+c to exit
+```
+

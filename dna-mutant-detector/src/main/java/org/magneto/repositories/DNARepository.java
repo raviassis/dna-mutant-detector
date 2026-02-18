@@ -2,10 +2,22 @@ package org.magneto.repositories;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.magneto.api.dtos.StatsDto;
 import org.magneto.entities.DNAEntity;
+import org.magneto.entities.StatsEntity;
 
 @ApplicationScoped
 public class DNARepository implements PanacheRepository<DNAEntity> {
+    public StatsEntity getStats() {
+        var count = this.countDNAs();
+        var stats = new StatsEntity();
+        stats.countMutantDNA = count.mutants;
+        stats.countHumanDNA = count.humans;
+        if (count.humans != 0)
+            stats.ratio = count.mutants / (double) count.humans;
+        return stats;
+    }
+
     public record DNACounts(long mutants, long humans) {
     }
 
