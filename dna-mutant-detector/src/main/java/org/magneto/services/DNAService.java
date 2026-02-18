@@ -40,23 +40,15 @@ public class DNAService {
         return dnaEntity;
     }
 
-    public DNAEntity analyse2(String[] dna) throws NoSuchAlgorithmException {
-        var dnaEntity = new DNAEntity();
-        dnaEntity.dnaHash = DNAHasher.hash(dna);
-        dnaEntity.mutant = DNADetector.isMutant(dna);
-        this.dnaProducer.send(dnaEntity);
-        return dnaEntity;
-    }
-
     public StatsDto stats() {
         var counts = dnaRepository.countDNAs();
         var countMutants = counts.mutants();
         var countHumans = counts.humans();
         var stats = new StatsDto();
-        stats.CountMutantDNA = countMutants;
-        stats.CountHumanDNA = countHumans;
+        stats.countMutantDNA = countMutants;
+        stats.countHumanDNA = countHumans;
         if (countHumans != 0)
-            stats.Ratio = countMutants / (double) countHumans;
+            stats.ratio = countMutants / (double) countHumans;
         return stats;
     }
 }

@@ -105,9 +105,9 @@ class DNAServiceTest {
 
         StatsDto stats = service.stats();
 
-        assertEquals(40L, stats.CountMutantDNA);
-        assertEquals(10L, stats.CountHumanDNA);
-        assertEquals(4.0, stats.Ratio);
+        assertEquals(40L, stats.countMutantDNA);
+        assertEquals(10L, stats.countHumanDNA);
+        assertEquals(4.0, stats.ratio);
     }
 
     @Test
@@ -118,8 +118,8 @@ class DNAServiceTest {
 
         StatsDto stats = service.stats();
 
-        assertEquals(5L, stats.CountMutantDNA);
-        assertEquals(0L, stats.CountHumanDNA);
-        assertEquals(0.0, stats.Ratio);
+        assertEquals(5L, stats.countMutantDNA);
+        assertEquals(0L, stats.countHumanDNA);
+        assertEquals(0.0, stats.ratio);
     }
 }

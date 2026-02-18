@@ -5,17 +5,23 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.magneto.entities.StatsEntity;
+import org.magneto.infra.redis.DNAStatsService;
 import org.magneto.repositories.DNARepository;
 
 @ApplicationScoped
 public class DNAConsumer {
     private final ObjectMapper mapper = new ObjectMapper();
-
+    DNAStatsService dnaStatsService;
     DNARepository dnaRepository;
 
     @Inject
-    public DNAConsumer(DNARepository dnaRepository) {
+    public DNAConsumer(
+            DNARepository dnaRepository,
+            DNAStatsService dnaStatsService
+    ) {
         this.dnaRepository = dnaRepository;
+        this.dnaStatsService = dnaStatsService;
     }
 
     @Incoming("async-persist-dna")
@@ -31,6 +37,8 @@ public class DNAConsumer {
             }
             dnaEntity = dto.toEntity();
             dnaRepository.persist(dnaEntity);
+            StatsEntity stats = dnaRepository.getStats();
+            dnaStatsService.updateStats(stats);
             System.out.println("Saved dna: " + dto.dnaHash);
 
         } catch (Throwable e) {

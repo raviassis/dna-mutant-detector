@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.magneto.api.dtos.DNADto;
 import org.magneto.services.DNAService;
+import org.magneto.services.DNAServiceAsync;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -20,7 +21,7 @@ public class MutantController {
 
     @POST
     public Response mutant(DNADto dto) throws NoSuchAlgorithmException {
-        var dna = dnaService.analyse2(dto.dna);
+        var dna = dnaService.analyse(dto.dna);
         if (dna.mutant) {
             return Response.ok().build();
         }

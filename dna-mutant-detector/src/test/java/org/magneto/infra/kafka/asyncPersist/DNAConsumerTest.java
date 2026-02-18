@@ -1,6 +1,7 @@
 package org.magneto.infra.kafka.asyncPersist;
 
 import org.junit.jupiter.api.Test;
+import org.magneto.infra.redis.DNAStatsService;
 import org.mockito.ArgumentCaptor;
 import org.magneto.entities.DNAEntity;
 import org.magneto.repositories.DNARepository;
@@ -19,8 +20,9 @@ class DNAConsumerTest {
     @Test
     void shouldPersistEntityWhenHashDoesNotExist() {
         DNARepository repository = mock(DNARepository.class);
+        var statsService = mock(DNAStatsService.class);
         when(repository.findByHash("hash-new")).thenReturn(null);
-        DNAConsumer consumer = new DNAConsumer(repository);
+        DNAConsumer consumer = new DNAConsumer(repository, statsService);
         String payload = "{\"dnaHash\":\"hash-new\",\"isMutant\":true}";
 
         consumer.process(payload);
@@ -35,10 +37,11 @@ class DNAConsumerTest {
     @Test
     void shouldIgnoreDuplicatedHash() {
         DNARepository repository = mock(DNARepository.class);
+        var statsService = mock(DNAStatsService.class);
         DNAEntity existing = new DNAEntity();
         existing.dnaHash = "hash-existing";
         when(repository.findByHash("hash-existing")).thenReturn(existing);
-        DNAConsumer consumer = new DNAConsumer(repository);
+        DNAConsumer consumer = new DNAConsumer(repository, statsService);
         String payload = "{\"dnaHash\":\"hash-existing\",\"isMutant\":false}";
 
         consumer.process(payload);
@@ -49,7 +52,8 @@ class DNAConsumerTest {
     @Test
     void shouldIgnoreInvalidPayloadWithoutTouchingRepository() {
         DNARepository repository = mock(DNARepository.class);
-        DNAConsumer consumer = new DNAConsumer(repository);
+        var statsService = mock(DNAStatsService.class);
+        DNAConsumer consumer = new DNAConsumer(repository, statsService);
 
         assertDoesNotThrow(() -> consumer.process("not-a-json"));
         verifyNoInteractions(repository);
