@@ -65,14 +65,16 @@ The trace does not specify if the time processing the request was spent handling
 
 Solutions:
 - For the time handling the requests, I believe that doing some horizontal autoscaling could solve the problem. The backend is stateless, so we would not have problem with different data between replicas.
+
 ![Solution1](solution-1.png)
 - For the awaiting database connection, increase connection pool wont works forever. I would implement the async persistence to persist the dna hash on database.
+
 ![Solution2](solution-2.png)
 
 ### Tests async design system
-![arch-design](design-arch-v1.png)
+![arch-design](design-arch-v2.png)
 
-I used the sameload test scenario from the test before.
+I used the same load test scenario from the test before.
 - start at 100 interations/s
 - ramp up from 100 interations/s to 600 interations/s in 30s
 - keep 600 interations/s for 1min
