@@ -40,7 +40,6 @@ public class DNAConsumer {
             StatsEntity stats = dnaRepository.getStats();
             dnaStatsService.updateStats(stats);
             System.out.println("Saved dna: " + dto.dnaHash);
-
         } catch (Throwable e) {
             // ignoring errors to avoid bad messages blocking the queue
             // TODO: implement dead letter
