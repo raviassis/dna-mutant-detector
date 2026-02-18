@@ -1,5 +1,6 @@
 package org.magneto.api;
 
+import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -18,9 +19,13 @@ public class StatsControllerAsync {
     DNAServiceAsync dnaService;
 
     @GET
-    public Response stats() {
-        return Response.ok(
-                StatsDto.fromEntity(dnaService.stats())
-        ).build();
+    public Uni<Response> stats() {
+        return dnaService.stats()
+                .onItem()
+                .transform(
+                stats -> Response.ok(
+                        StatsDto.fromEntity(stats)
+                    ).build()
+                );
     }
 }

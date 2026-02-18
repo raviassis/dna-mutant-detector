@@ -15,15 +15,12 @@ import java.security.NoSuchAlgorithmException;
 @ApplicationScoped
 public class DNAService {
     DNARepository dnaRepository;
-    DNAProducer dnaProducer;
 
     @Inject
     public DNAService(
-            DNARepository dnaRepository,
-            DNAProducer dnaProducer
+            DNARepository dnaRepository
     ) {
         this.dnaRepository = dnaRepository;
-        this.dnaProducer = dnaProducer;
     }
 
     @Transactional

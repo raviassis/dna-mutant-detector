@@ -1,5 +1,6 @@
 package org.magneto.api;
 
+import io.smallrye.common.annotation.Blocking;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -23,6 +24,7 @@ public class MutantControllerAsync {
 
     // async persists
     @POST
+    @Blocking
     public Response mutant(DNADto dto) throws NoSuchAlgorithmException {
         var dna = dnaServiceAsync.analyse(dto.dna);
         if (dna.mutant) {

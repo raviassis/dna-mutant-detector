@@ -2,7 +2,8 @@ package org.magneto.infra.redis;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.quarkus.redis.datasource.RedisDataSource;
+import io.quarkus.redis.datasource.ReactiveRedisDataSource;
+import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.magneto.entities.StatsEntity;
@@ -13,30 +14,30 @@ public class DNAStatsService {
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Inject
-    RedisDataSource ds;
+    ReactiveRedisDataSource ds;
 
-    public void updateStats(StatsEntity stats) throws JsonProcessingException {
+    public Uni<Void> updateStats(StatsEntity stats) throws JsonProcessingException {
         var commands = ds.value(String.class);
         try {
             var json = mapper.writeValueAsString(StatsDto.fromEntity(stats));
-            commands.set(STATS_KEY, json);
+            return commands.set(STATS_KEY, json);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public StatsEntity getStats() {
+    public Uni<StatsEntity> getStats() {
         var commands = ds.value(String.class);
-        String json = commands.get(STATS_KEY);
-        if (json == null) {
-            return new StatsEntity();
-        }
-        try {
-            var dto = mapper.readValue(json, StatsDto.class);
-            return dto.toEntity();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
+        return commands.get(STATS_KEY)
+                .onItem().transform(json -> {
+                    if (json == null) {
+                        return new StatsEntity();
+                    }
+                    try {
+                        return mapper.readValue(json, StatsDto.class).toEntity();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
     }
 }

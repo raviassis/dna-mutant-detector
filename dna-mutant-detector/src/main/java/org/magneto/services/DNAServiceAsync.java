@@ -1,5 +1,6 @@
 package org.magneto.services;
 
+import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -39,7 +40,7 @@ public class DNAServiceAsync {
         return dnaEntity;
     }
 
-    public StatsEntity stats() {
+    public Uni<StatsEntity> stats() {
         return this.dnaStatsService.getStats();
     }
 }
