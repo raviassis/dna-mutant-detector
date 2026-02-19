@@ -41,10 +41,8 @@ public class DNAConsumer {
             dnaStatsService.updateStats(stats);
             System.out.println("Saved dna: " + dto.dnaHash);
         } catch (Throwable e) {
-            // ignoring errors to avoid bad messages blocking the queue
-            // TODO: implement dead letter
-            System.out.println("Error payload: " + payload);
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 }

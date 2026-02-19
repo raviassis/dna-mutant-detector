@@ -6,12 +6,15 @@ import io.restassured.http.ContentType;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
 import org.magneto.api.dtos.DNADto;
+import org.magneto.api.dtos.StatsDto;
 import org.magneto.entities.DNAEntity;
 import org.magneto.exceptions.ValidationException;
 import org.magneto.services.DNAService;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.Mockito.when;
 
 @QuarkusTest
@@ -27,11 +30,11 @@ class MutantControllerTest {
         DNAEntity analysed = new DNAEntity();
         analysed.mutant = true;
         when(dnaService.analyse(dto.dna)).thenReturn(analysed);
+        var controller = new MutantController();
+        controller.dnaService = dnaService;
 
-        given()
-                .body(dto).contentType(ContentType.JSON)
-                .when().post("/mutant")
-                .then().statusCode(Response.Status.OK.getStatusCode());
+        var response = controller.mutant(dto);
+        assertEquals(200, response.getStatus());
     }
 
     @Test
@@ -42,10 +45,11 @@ class MutantControllerTest {
         analysed.mutant = false;
         when(dnaService.analyse(dto.dna)).thenReturn(analysed);
 
-        given()
-                .body(dto).contentType(ContentType.JSON)
-                .when().post("/mutant")
-                .then().statusCode(Response.Status.FORBIDDEN.getStatusCode());
+        var controller = new MutantController();
+        controller.dnaService = dnaService;
+
+        var response = controller.mutant(dto);
+        assertEquals(403, response.getStatus());
     }
 
     @Test

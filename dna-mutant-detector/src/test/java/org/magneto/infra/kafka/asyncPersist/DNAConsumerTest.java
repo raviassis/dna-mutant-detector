@@ -6,8 +6,8 @@ import org.mockito.ArgumentCaptor;
 import org.magneto.entities.DNAEntity;
 import org.magneto.repositories.DNARepository;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -50,12 +50,12 @@ class DNAConsumerTest {
     }
 
     @Test
-    void shouldIgnoreInvalidPayloadWithoutTouchingRepository() {
+    void shouldNotTouchRepository() {
         DNARepository repository = mock(DNARepository.class);
         var statsService = mock(DNAStatsService.class);
         DNAConsumer consumer = new DNAConsumer(repository, statsService);
 
-        assertDoesNotThrow(() -> consumer.process("not-a-json"));
+        assertThrows(RuntimeException.class, () -> consumer.process("not-a-json"));
         verifyNoInteractions(repository);
     }
 }
