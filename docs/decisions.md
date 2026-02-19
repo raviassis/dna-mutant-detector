@@ -23,7 +23,7 @@ I writed a load test scenario using k6 using ramping-arrival-rate strategy.
 - keep 600 interations/s for 1min
 - ramp down to 100 interations/s in 30s
 
-Each interation we send 1 random dna 6x6 to /mutant and request the /stats
+For each interation we send a random dna 6x6 to /mutant and request the /stats
 
 *OBS: It was not possible to reach 1,000,000 req/s locally. K6 tried to scale until the limit of the machine. I kept a smaller rate for compare the architecures locally
 

@@ -1,13 +1,15 @@
 package org.magneto.api;
 
+import io.smallrye.common.annotation.Blocking;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.magneto.api.dtos.DNADto;
 import org.magneto.services.DNAService;
-import org.magneto.services.DNAServiceAsync;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -19,7 +21,9 @@ public class MutantController {
     @Inject
     DNAService dnaService;
 
+    // async persists
     @POST
+    @Blocking
     public Response mutant(DNADto dto) throws NoSuchAlgorithmException {
         var dna = dnaService.analyse(dto.dna);
         if (dna.mutant) {

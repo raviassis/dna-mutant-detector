@@ -15,15 +15,11 @@ public class StatsDto {
         var dto = new StatsDto();
         dto.countHumanDNA = stats.countHumanDNA;
         dto.countMutantDNA = stats.countMutantDNA;
-        dto.ratio = stats.ratio;
+        dto.ratio = stats.getRatio();
         return dto;
     }
 
     public StatsEntity toEntity() {
-        var entity = new StatsEntity();
-        entity.countHumanDNA = this.countHumanDNA;
-        entity.countMutantDNA = this.countMutantDNA;
-        entity.ratio = this.ratio;
-        return entity;
+        return new StatsEntity(this.countMutantDNA, this.countHumanDNA);
     }
 }

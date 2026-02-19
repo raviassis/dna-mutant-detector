@@ -15,7 +15,7 @@ public class StatsDto {
         var dto = new StatsDto();
         dto.countHumanDNA = stats.countHumanDNA;
         dto.countMutantDNA = stats.countMutantDNA;
-        dto.ratio = stats.ratio;
+        dto.ratio = stats.getRatio();
         return dto;
     }
 }

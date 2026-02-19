@@ -26,10 +26,7 @@ class DNAStatsServiceTest {
 
         DNAStatsService service = new DNAStatsService();
         service.ds = ds;
-        StatsEntity stats = new StatsEntity();
-        stats.countMutantDNA = 1;
-        stats.countHumanDNA = 2;
-        stats.ratio = 0.5;
+        StatsEntity stats = new StatsEntity(1, 2);
 
         service.updateStats(stats).await().indefinitely();
 
@@ -46,10 +43,7 @@ class DNAStatsServiceTest {
 
         DNAStatsService service = new DNAStatsService();
         service.ds = ds;
-        StatsEntity stats = new StatsEntity();
-        stats.countMutantDNA = 1;
-        stats.countHumanDNA = 2;
-        stats.ratio = 0.5;
+        StatsEntity stats = new StatsEntity(1, 2);
 
         assertThrows(RuntimeException.class, () -> service.updateStats(stats));
     }
@@ -68,7 +62,7 @@ class DNAStatsServiceTest {
 
         assertEquals(0, result.countMutantDNA);
         assertEquals(0, result.countHumanDNA);
-        assertEquals(0.0, result.ratio);
+        assertEquals(0.0, result.getRatio());
     }
 
     @Test
@@ -86,7 +80,7 @@ class DNAStatsServiceTest {
 
         assertEquals(9, result.countMutantDNA);
         assertEquals(4, result.countHumanDNA);
-        assertEquals(2.25, result.ratio);
+        assertEquals(2.25, result.getRatio());
     }
 
     @Test
