@@ -3,7 +3,7 @@ package org.magneto.core;
 import org.magneto.exceptions.ValidationException;
 
 public class DNADetector {
-    private static int SEQUENCE_LENGTH = 4;
+    private static final int SEQUENCE_LENGTH = 4;
     public static boolean isMutant(String[] dna) {
         if (dna == null) {
             throw new ValidationException("DNA must not be null");

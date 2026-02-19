@@ -1,27 +1,29 @@
 package org.magneto.services;
 
+import io.smallrye.mutiny.Uni;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.magneto.api.dtos.StatsDto;
 import org.magneto.core.DNAHasher;
 import org.magneto.entities.DNAEntity;
-import org.magneto.repositories.DNARepository;
-
-import java.security.NoSuchAlgorithmException;
+import org.magneto.entities.StatsEntity;
+import org.magneto.infra.kafka.asyncPersist.DNAProducer;
+import org.magneto.infra.redis.DNAStatsService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class DNAServiceTest {
+
     @Test
-    void shouldReturnExistingEntityWhenHashAlreadyExists() throws NoSuchAlgorithmException {
+    void shouldAnalyseMutantDnaAndSendForAsyncPersistence() throws Exception {
+        DNAProducer dnaProducer = mock(DNAProducer.class);
+        DNAStatsService dnaStatsService = mock(DNAStatsService.class);
+        DNAService service = new DNAService(dnaProducer, dnaStatsService);
         String[] dna = {
                 "AAAAGA",
                 "AAAAGC",
@@ -30,49 +32,19 @@ class DNAServiceTest {
                 "CCCCTA",
                 "TCACTG"
         };
-        String hash = DNAHasher.hash(dna);
-        DNAEntity existing = new DNAEntity();
-        existing.dnaHash = hash;
-        existing.mutant = true;
-
-        DNARepository repository = mock(DNARepository.class);
-        when(repository.findByHash(hash)).thenReturn(existing);
-        DNAService service = new DNAService(repository);
 
         DNAEntity result = service.analyse(dna);
 
-        assertSame(existing, result);
-        verify(repository, never()).persist(any(DNAEntity.class));
+        assertTrue(result.mutant);
+        assertEquals(DNAHasher.hash(dna), result.dnaHash);
+        verify(dnaProducer, times(1)).send(result);
     }
 
     @Test
-    void shouldCreateAndPersistEntityWhenHashDoesNotExist() throws NoSuchAlgorithmException {
-        String[] dna = {
-                "AAAAGA",
-                "AAAAGC",
-                "TTATGT",
-                "AGAAGG",
-                "CCCCTA",
-                "TCACTG"
-        };
-        String hash = DNAHasher.hash(dna);
-
-        DNARepository repository = mock(DNARepository.class);
-        when(repository.findByHash(hash)).thenReturn(null);
-        DNAService service = new DNAService(repository);
-
-        DNAEntity result = service.analyse(dna);
-
-        ArgumentCaptor<DNAEntity> entityCaptor = ArgumentCaptor.forClass(DNAEntity.class);
-        verify(repository).persist(entityCaptor.capture());
-        DNAEntity persisted = entityCaptor.getValue();
-        assertSame(persisted, result);
-        assertEquals(hash, persisted.dnaHash);
-        assertTrue(persisted.mutant);
-    }
-
-    @Test
-    void shouldCreateAndPersistHumanEntityWhenHashDoesNotExist() throws NoSuchAlgorithmException {
+    void shouldAnalyseHumanDnaAndSendForAsyncPersistence() throws Exception {
+        DNAProducer dnaProducer = mock(DNAProducer.class);
+        DNAStatsService dnaStatsService = mock(DNAStatsService.class);
+        DNAService service = new DNAService(dnaProducer, dnaStatsService);
         String[] dna = {
                 "ATGCGA",
                 "CAGTGC",
@@ -81,45 +53,40 @@ class DNAServiceTest {
                 "GCGTCA",
                 "TCACTG"
         };
-        String hash = DNAHasher.hash(dna);
-
-        DNARepository repository = mock(DNARepository.class);
-        when(repository.findByHash(hash)).thenReturn(null);
-        DNAService service = new DNAService(repository);
 
         DNAEntity result = service.analyse(dna);
 
-        ArgumentCaptor<DNAEntity> entityCaptor = ArgumentCaptor.forClass(DNAEntity.class);
-        verify(repository).persist(entityCaptor.capture());
-        DNAEntity persisted = entityCaptor.getValue();
-        assertSame(persisted, result);
-        assertEquals(hash, persisted.dnaHash);
-        assertFalse(persisted.mutant);
+        assertFalse(result.mutant);
+        assertEquals(DNAHasher.hash(dna), result.dnaHash);
+        verify(dnaProducer, times(1)).send(result);
     }
 
     @Test
-    void shouldReturnStatsWithRatioWhenHumanCountIsNotZero() {
-        DNARepository repository = mock(DNARepository.class);
-        when(repository.countDNAs()).thenReturn(new DNARepository.DNACounts(40L, 10L));
-        DNAService service = new DNAService(repository);
+    void shouldReturnStatsFromDNAStatsService() {
+        DNAProducer dnaProducer = mock(DNAProducer.class);
+        DNAStatsService dnaStatsService = mock(DNAStatsService.class);
+        DNAService service = new DNAService(dnaProducer, dnaStatsService);
+        StatsEntity expected = new StatsEntity(40, 10);
+        when(dnaStatsService.getStats()).thenReturn(Uni.createFrom().item(expected));
 
-        StatsDto stats = service.stats();
+        StatsEntity result = service.stats().await().indefinitely();
 
-        assertEquals(40L, stats.countMutantDNA);
-        assertEquals(10L, stats.countHumanDNA);
-        assertEquals(4.0, stats.ratio);
+        assertEquals(40, result.countMutantDNA);
+        assertEquals(10, result.countHumanDNA);
+        assertEquals(4.0, result.getRatio());
+        verify(dnaStatsService, times(1)).getStats();
     }
 
     @Test
-    void shouldReturnStatsWithoutRatioWhenHumanCountIsZero() {
-        DNARepository repository = mock(DNARepository.class);
-        when(repository.countDNAs()).thenReturn(new DNARepository.DNACounts(5L, 0L));
-        DNAService service = new DNAService(repository);
+    void shouldPropagateStatsFailures() {
+        DNAProducer dnaProducer = mock(DNAProducer.class);
+        DNAStatsService dnaStatsService = mock(DNAStatsService.class);
+        DNAService service = new DNAService(dnaProducer, dnaStatsService);
+        when(dnaStatsService.getStats()).thenReturn(Uni.createFrom().failure(new RuntimeException("redis down")));
 
-        StatsDto stats = service.stats();
+        RuntimeException error = assertThrows(RuntimeException.class, () -> service.stats().await().indefinitely());
 
-        assertEquals(5L, stats.countMutantDNA);
-        assertEquals(0L, stats.countHumanDNA);
-        assertEquals(0.0, stats.ratio);
+        assertEquals("redis down", error.getMessage());
+        verify(dnaStatsService, times(1)).getStats();
     }
 }
