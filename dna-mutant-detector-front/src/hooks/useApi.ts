@@ -5,6 +5,7 @@ export const useStats = () => {
   return useQuery({
     queryKey: ["stats"],
     queryFn: api.getStats,
+    refetchInterval: 10*1000, //10s
   });
 };
 

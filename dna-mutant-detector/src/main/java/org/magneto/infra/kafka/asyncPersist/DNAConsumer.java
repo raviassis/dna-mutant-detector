@@ -38,7 +38,7 @@ public class DNAConsumer {
             dnaEntity = dto.toEntity();
             dnaRepository.persist(dnaEntity);
             StatsEntity stats = dnaRepository.getStats();
-            dnaStatsService.updateStats(stats);
+            dnaStatsService.updateStats(stats).await().indefinitely();
             System.out.println("Saved dna: " + dto.dnaHash);
         } catch (Throwable e) {
             System.out.println(e.getMessage());
