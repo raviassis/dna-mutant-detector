@@ -18,13 +18,9 @@ public class StatsController {
     DNAService dnaService;
 
     @GET
-    public Uni<Response> stats() {
+    public Uni<StatsDto> stats() {
         return dnaService.stats()
                 .onItem()
-                .transform(
-                stats -> Response.ok(
-                        StatsDto.fromEntity(stats)
-                    ).build()
-                );
+                .transform(StatsDto::fromEntity);
     }
 }

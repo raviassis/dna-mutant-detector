@@ -22,10 +22,7 @@ class StatsControllerTest {
         StatsController controller = new StatsController();
         controller.dnaService = dnaService;
 
-        var response = controller.stats().await().indefinitely();
-
-        assertEquals(200, response.getStatus());
-        StatsDto body = assertInstanceOf(StatsDto.class, response.getEntity());
+        var body = controller.stats().await().indefinitely();
         assertEquals(40L, body.countMutantDNA);
         assertEquals(10L, body.countHumanDNA);
         assertEquals(4.0, body.ratio);
