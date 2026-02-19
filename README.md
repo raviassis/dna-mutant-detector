@@ -1,5 +1,8 @@
 # DNA Mutant Detector
 
+## Prerequisites
+- Docker and Docker Compose
+
 ## Run all projects with Docker Compose
 
 From the project root:
@@ -16,7 +19,10 @@ This starts:
 | Backend   | http://localhost:8080  | Quarkus API        |
 | Grafana   | http://localhost:3001  | Dashboards & visualization |
 | Prometheus| http://localhost:9090  | Metrics            |
-| Database  | localhost:5432          | PostgreSQL (magneto)|
+| Database  | localhost:5432         | PostgreSQL (magneto)|
+| Kafka     | http://localhost:29092 | Event Streaming    |
+| Kafdrop   | http://localhost:9000  | Kafka UI           |
+| Redis     | http://localhost:6379  | Cache              |
 
 To run in the foreground (logs in the terminal):
 
