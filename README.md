@@ -1,5 +1,8 @@
 # DNA Mutant Detector
 
+## Solution Architecture
+![arch-design](docs/design-arch-v2.png)
+
 ## Prerequisites
 - Docker and Docker Compose
 
@@ -119,4 +122,3 @@ kafka-console-producer \
 > {"dna-hash":"hash456","isMutant":false}
 # cmd+c or ctrl+c to exit
 ```
-
